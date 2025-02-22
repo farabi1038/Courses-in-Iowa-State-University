@@ -1,0 +1,63 @@
+%% Your code goes in this file. 
+
+%% Your code goes in this file. 
+
+
+%
+clear all
+close all
+
+rgb = imread('/Users/ibnefarabishihab/Desktop/Course materials /COMS 575/HW3/part2/p2_image1.png');
+
+%bw = im2bw(img);
+% % find both black and white regions
+% stats = [regionprops(bw); regionprops(not(bw))]
+% % show the image and draw the detected rectangles on it
+% imshow(bw); 
+% hold on
+% for i = [63,66]
+%     rectangle('Position', stats(i).BoundingBox, ...
+%     'Linewidth', 3, 'EdgeColor', 'r', 'LineStyle', '--');
+% end
+
+[centers,radii,metricBright] = imfindcircles(rgb,[5 15],'ObjectPolarity','dark','Sensitivity',0.70)
+imshow(rgb)
+h = viscircles(centers,radii);
+
+
+cen=centers(1:7);
+cen=cen.';
+[idx,C] = kmeans(cen,2); %for image 1 and 3
+%[idx,C] = kmeans(cen,4); for image 2
+[C2,ia,ic] = unique(idx);
+a_counts = sort(accumarray(ic,1));
+
+%ref:https://www.mathworks.com/help/vision/ref/inserttext.html
+
+
+%text_str = cell(4,1);for image 2
+text_str = cell(2,1);%for image 1 and 3
+%conf_val = [a_counts(1)+2,a_counts(2)+1,a_counts(3)+1,a_counts(4)+1]; for image 2
+conf_val = [a_counts(1),a_counts(2)];%for image 1 and 3
+%for ii=1:4 for image 2
+for ii=1:2    
+
+   text_str{ii} = ['Count: ' num2str(conf_val(ii))];
+end
+
+
+%position = [1171 611;1363 611;1561 611;1763 611]; for image 2
+position = [1171 611;1363 611]; %for image 1 and 3
+%box_color = {'red','green','red','green'};for image 2
+box_color = {'red','green'};
+
+RGB = insertText(rgb,position,text_str,'FontSize',28,'BoxColor',...
+    box_color,'BoxOpacity',0.4,'TextColor','white');
+imshow(RGB)
+
+
+
+    
+
+
+
